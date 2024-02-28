@@ -1,7 +1,179 @@
 <!DOCTYPE html>
-<html>
-<body>
-<h1>Patent Bar Quiz</h1>
-Email for payment methods.
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Patent Bar Study Quiz</title>
+  <link rel="favicon" href="favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A practice study quiz to help you study for the USPTO patent bar exam.">
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Patent Bar Study Quiz">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark:bg-neutral-800 text-gray-900 dark:text-gray-300 ">
+  <main class="flex flex-col items-center justify-center h-full px-2 grow">
+    <noscript>
+      <div
+        class="bg-red-100 border border-red-400 text-red-700 dark:border-red-700 dark:text-red-500 px-4 py-3 rounded relative"
+        role="alert">
+        <strong class="font-bold">JavaScript is disabled!</strong>
+        <span class="block sm:inline">This site requires JavaScript to function. Please enable JavaScript in your
+          browser settings.</span>
+      </div>
+    </noscript>
+    <div id="loading-page" class="">
+      <div class="flex flex-col items-center">
+        <h1 class="text-5xl font-bold ">Loading...</h1>
+        <p>Please wait while the quiz loads.</p>
+        <p id="loading-details"></p>
+      </div>
+    </div>
+    <div id="settings-page" class="container mx-auto hidden">
+      <div class="flex items-center justify-center w-full">
+        <label for="dropzone-file"
+          class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+          <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+            </svg>
+            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span>
+              or drag and drop</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">quiz-YYYY-MM-DD.json</p>
+          </div>
+          <input id="dropzone-file" type="file" class="hidden" />
+        </label>
+      </div>
+      <button>
+        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z" />
+          <path
+            d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
+        </svg>
+      </button>
+    </div>
+    <div id="setup-page" class="container mx-auto px-4 hidden">
+      <div class="flex flex-col items-center">
+        <h1 class="font-bold text-base sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">Patent Bar Study Quiz</h1>
+        <p class="py-3">A quiz to help you study for the patent bar exam.</p>
+      </div>
+      <form id="quiz-setup" class="py-3">
+        <div class="flex flex-col items-center">
+          <span class="inline-flex">
+            <p>Select the categories you want to study.</p>
+            <button type="button" id="select-all" class="underline pl-3">Select All</button>
+            <button type="button" id="select-none" class="underline pl-3">Select None</button>
+          </span>
+          <div id="categories-checkboxes" class="grid grid-cols-2">
+          </div>
+          <p>Options.</p>
+          <div class="grid grid-cols-2">
+            <div class="flex items-center pl-3">
+              <input type="checkbox" id="shuffle-questions" name="shuffleQuestions">
+              <label class="w-full py-3 ml-2 text-sm font-medium " for="shuffle-questions">Shuffle Questions</label>
+            </div>
+            <div class="flex items-center pl-3">
+              <input type="checkbox" id="shuffle-answers" name="shuffleAnswers">
+              <label class="w-full py-3 ml-2 text-sm font-medium " for="shuffle-answers" checked>Shuffle Answers</label>
+            </div>
+          </div>
+          <div class="grid grid-rows-2 grid-flow-col gap-4">
+            <button id="start-button" type="submit"
+              class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded">Start</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="question-page" class="container mx-auto hidden">
+      <span id="question-id" class="inline overflow-visible min-w-fit"></span>
+      <div id="quiz-progress" class="top-[0vh] flex flex-row items-center w-full space-x-3">
+        <progress id="quiz-progress-bar" class="w-full bg-gray-300 dark:bg-gray-700 rounded-full" value="0"></progress>
+        <span id="quiz-progress-text" class="inline"></span>
+      </div>
+      <div id="question" class="text-base sm:text-lg md:text-xl">
+        <div itemscope itemtype="https://schema.org/eduQuestionType">
+          <p itemprop="text" id="question-text" class="question-text py-6"></p>
+          <div id="answers" class="grid grid-cols-1 gap-4">
+            <div itemscope itemprop="acceptedAnswer" itemtype="http://schema.org/Answer"><button itemprop="text"
+                id="answer-a"
+                class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded w-full text-left disabled:cursor-not-allowed disabled:empty:[&:not([data-guessed])]:hidden disabled:data-[correct]:text-green-700 disabled:data-[correct]:border-green-700 dark:disabled:data-[correct]:text-green-300 dark:disabled:data-[correct]:border-green-300 disabled:text-red-700 disabled:border-red-700 dark:disabled:text-red-400 dark:disabled:border-red-400"
+                disabled></button></div>
+            <div itemscope itemprop="acceptedAnswer" itemtype="http://schema.org/Answer"><button itemprop="text"
+                id="answer-b"
+                class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded w-full text-left disabled:cursor-not-allowed disabled:empty:[&:not([data-guessed])]:hidden disabled:data-[correct]:text-green-700 disabled:data-[correct]:border-green-700 dark:disabled:data-[correct]:text-green-300 dark:disabled:data-[correct]:border-green-300 disabled:text-red-700 disabled:border-red-700 dark:disabled:text-red-400 dark:disabled:border-red-400"
+                disabled></button></div>
+            <div itemscope itemprop="acceptedAnswer" itemtype="http://schema.org/Answer"><button itemprop="text"
+                id="answer-c"
+                class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded w-full text-left disabled:cursor-not-allowed disabled:empty:[&:not([data-guessed])]:hidden disabled:data-[correct]:text-green-700 disabled:data-[correct]:border-green-700 dark:disabled:data-[correct]:text-green-300 dark:disabled:data-[correct]:border-green-300 disabled:text-red-700 disabled:border-red-700 dark:disabled:text-red-400 dark:disabled:border-red-400"
+                disabled></button></div>
+            <div itemscope itemprop="acceptedAnswer" itemtype="http://schema.org/Answer"><button itemprop="text"
+                id="answer-d"
+                class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded w-full text-left disabled:cursor-not-allowed disabled:empty:[&:not([data-guessed])]:hidden disabled:data-[correct]:text-green-700 disabled:data-[correct]:border-green-700 dark:disabled:data-[correct]:text-green-300 dark:disabled:data-[correct]:border-green-300 disabled:text-red-700 disabled:border-red-700 dark:disabled:text-red-400 dark:disabled:border-red-400"
+                disabled></button></div>
+            <div itemscope itemprop="acceptedAnswer" itemtype="http://schema.org/Answer"><button itemprop="text"
+                id="answer-e"
+                class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded w-full text-left disabled:cursor-not-allowed disabled:empty:[&:not([data-guessed])]:hidden disabled:data-[correct]:text-green-700 disabled:data-[correct]:border-green-700 dark:disabled:data-[correct]:text-green-300 dark:disabled:data-[correct]:border-green-300 disabled:text-red-700 disabled:border-red-700 dark:disabled:text-red-400 dark:disabled:border-red-400"
+                disabled></button></div>
+          </div>
+        </div>
+        <div id="nav" class="py-6">
+          <button id="previous-button"
+            class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded disabled:cursor-not-allowed disabled:opacity-50 disabled:hidden"
+            disabled>Previous</button>
+          <button id="next-button"
+            class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded disabled:cursor-not-allowed disabled:opacity-50"
+            disabled>Next</button>
+          <button id="complete-button" type="button"
+            class="btn btn-primary bg-transparent py-2 px-4 border hover:border-transparent rounded disabled:cursor-not-allowed disabled:opacity-50"
+            style="display: none;">Complete</button>
+        </div>
+      </div>
+    </div>
+    <div id="results-page" class="container mx-auto px-4 hidden">
+      <div class="">
+        <div class="flex flex-col items-center">
+          <div class="flex flex-col items-center">
+            <h2 class="text-3xl font-bold  py-6 px-2">Quiz Complete</h2>
+            <p class="py-3">You have completed the quiz.</p>
+            <div id="stats-body" class="grid grid-cols-1">
+              <div id="stats-score" class="flex flex-row items-center justify-between">
+                <p class="px-2">Score</p>
+                <p id="stats-score-text" class="px-2">0%</p>
+              </div>
+              <div id="stats-correct" class="flex flex-row items-center justify-between">
+                <p class="px-2">Correct &#40First Try&#41</p>
+                <p id="stats-correct-text" class="px-2">0</p>
+              </div>
+              <div id="stats-questions" class="flex flex-row items-center justify-between">
+                <p class="px-2">Questions Answered</p>
+                <p id="stats-questions-text" class="px-2">0</p>
+              </div>
+              <div id="stats-categories" class="flex flex-row items-center justify-between">
+                <p class="px-2">Categories</p>
+                <p id="stats-categories-text" class="px-2">0</p>
+              </div>
+            </div>
+          </div>
+          <h3 class="text-2xl font-bold  py-6 px-2">Study Again</h3>
+          <div class="grid grid-cols-3">
+            <button id="new-quiz-button" class="btn btn-primary bg-transparent py-2 px-4 underline rounded">Start New
+              Quiz</button>
+            <button id="redo-quiz-button" class="btn btn-primary bg-transparent py-2 px-4 underline rounded">Restart
+              Quiz</button>
+            <button id="redo-wrong-button" class="btn btn-primary bg-transparent py-2 px-4 underline rounded">Review
+              Incorrect</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="script.js"></script>
 </body>
 </html>
